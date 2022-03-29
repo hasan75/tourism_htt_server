@@ -12,6 +12,7 @@ app.use(express.json());
 
 //connection
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.4dxux.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+// console.log(uri);
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -20,9 +21,9 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const database = client.db('pran-rfl-DB');
+    const database = client.db('touriusm_htt');
     const user_collection = database.collection('users');
-    const product_collection = database.collection('products');
+    const product_collection = database.collection('services');
     const order_collection = database.collection('orders');
     const review_collection = database.collection('reviews');
 
