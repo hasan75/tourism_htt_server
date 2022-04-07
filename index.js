@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 const ObjectId = require('mongodb').ObjectId;
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 //MIDDLEWARE
 app.use(cors());
@@ -54,7 +54,27 @@ async function run() {
 
     //Product load by GET
     app.get('/products', async (req, res) => {
-      const result = await product_collection.find({}).toArray();
+      const cursor = product_collection.find({});
+      const page = req.query.page;
+      const size = parseInt(req.query.size);
+      let products;
+      const count = await cursor.count();
+      if (page) {
+        products = await cursor
+          .skip(page * size)
+          .limit(size)
+          .toArray();
+      } else {
+        products = await cursor.toArray();
+      }
+      res.json({ count, products });
+    });
+
+    //single product load by GET
+    app.get('/products/:id', async (req, res) => {
+      const result = await product_collection.findOne({
+        _id: ObjectId(req.params.id),
+      });
       res.json(result);
     });
 
@@ -84,6 +104,14 @@ async function run() {
       } else {
         result = await order_collection.find({}).toArray();
       }
+      res.json(result);
+    });
+
+    //get orders for payment
+    app.get('/orders/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await order_collection.findOne(query);
       res.json(result);
     });
 
