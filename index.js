@@ -28,6 +28,7 @@ async function run() {
     const product_collection = database.collection('services');
     const order_collection = database.collection('orders');
     const review_collection = database.collection('reviews');
+    const blog_collection = database.collection('blogs');
 
     //adding USER by POST
     app.post('/users', async (req, res) => {
@@ -35,10 +36,28 @@ async function run() {
       res.json(result);
     });
 
+    //get users by GET
+    app.get('/users', async (req, res) => {
+      const result = await user_collection.find({}).toArray();
+      res.json(result);
+    });
+
     //adding USER by POST
     app.get('/admin/:email', async (req, res) => {
       const email = req.params.email;
       const result = await user_collection.findOne({ email: email });
+      res.json(result);
+    });
+
+    // get blog by get
+    app.get('/blogs', async (req, res) => {
+      const result = await blog_collection.find({}).toArray();
+      res.json(result);
+    });
+
+    //adding blogs by admin
+    app.post('/blog', async (req, res) => {
+      const result = await blog_collection.insertOne(req.body);
       res.json(result);
     });
 
@@ -117,6 +136,20 @@ async function run() {
       res.json(result);
     });
 
+    //update single orders for payment
+    app.put('/orders/:id', async (req, res) => {
+      const id = req.params.id;
+      const payment = req.body;
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          payment: payment,
+        },
+      };
+      const result = await order_collection.updateOne(filter, updateDoc);
+      res.json(result);
+    });
+
     //CHANGE ORDER STATUS (UPDATE) by PUT
     app.put('/updateOrderStatus', async (req, res) => {
       const id = req.body.id;
@@ -188,7 +221,7 @@ async function run() {
     //payment intent
     app.post('/create-payment-intent', async (req, res) => {
       const paymentInfo = req.body;
-      const amount = parseInt(paymentInfo.thePrice) * 100;
+      const amount = paymentInfo.thePrice * 100;
       const paymentIntent = await stripe.paymentIntents.create({
         currency: 'usd',
         amount: amount,
