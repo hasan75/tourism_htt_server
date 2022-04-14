@@ -56,7 +56,7 @@ async function run() {
     });
 
     //adding blogs by admin
-    app.post('/blog', async (req, res) => {
+    app.post('/addBlog', async (req, res) => {
       const result = await blog_collection.insertOne(req.body);
       res.json(result);
     });
