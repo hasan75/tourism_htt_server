@@ -239,6 +239,10 @@ app.get('/', (req, res) => {
   res.send('Hit the trail Server Running');
 });
 
+app.get('/hello', (req, res) => {
+  res.send('Hello from server');
+});
+
 app.listen(port, () => {
   console.log('Running Server on:', port);
 });
