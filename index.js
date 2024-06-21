@@ -13,7 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 //connection
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.4dxux.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://hasanjab14:${process.env.DB_PASS}@cluster0.nojj5zi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+
 // console.log(uri);
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
